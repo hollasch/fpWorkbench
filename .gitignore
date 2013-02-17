@@ -1,0 +1,4 @@
+# Git Ignore file for 'hexfloat' project.
+
+*.exe
+*.obj
