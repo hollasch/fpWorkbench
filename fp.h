@@ -26,7 +26,7 @@ struct fp32
     // Constructors. Note that with the exception of component-wise
     // initialization and unsigned int initialization, the standard
     // conversion from integral to floating-point values applies.
-    
+
     fp32 (int s, int e, int m) : sign(s), exponent(e), mantissa(m) {}
     fp32 (unsigned int value)  : i(value) {}
 
