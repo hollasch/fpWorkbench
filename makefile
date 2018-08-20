@@ -28,3 +28,5 @@ clean:
 
 clobber: clean
 	del 2>nul hexfloat.exe specials.exe fp.exe
+
+fresh: clobber all
