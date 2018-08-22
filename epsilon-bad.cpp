@@ -11,7 +11,7 @@ union intfloat   // This union allows for bit manipulation of floating-point
 // down but which we don't understand fully. I think. Maybe 0.00001 would be
 // better, perhaps, but then again I'm not sure why.
 
-const float epsilon = 1e-6;
+const float epsilon { 1e-6f };
 
 void PrintBinary (int x, int start, int end);
 void PrintVal    (intfloat);
