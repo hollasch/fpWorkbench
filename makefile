@@ -35,7 +35,7 @@ $(outDir)\epsilon-bad.exe: epsilon-bad.cpp
 $(outDir)\specials.exe: specials.c
     cl $(cppOptions) $? -Fe$@ -Fo$(objDir)\specials.obj
 
-$(outDir)\hexfloat.exe: hexfloat.c
+$(outDir)\hexfloat.exe: hexfloat.cpp
     cl $(cppOptions) $? -Fe$@ -Fo$(objDir)\hexfloat.obj
 
 $(outDir)\fp.exe: fp.cpp
