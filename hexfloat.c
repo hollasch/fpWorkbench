@@ -35,66 +35,66 @@ void   PrintBinary (int value, int highbit, int lowbit);
 
 int  main  (int argc, char *argv[])
 {
-    char *ptr;		/* Input Pointer */
+    char *ptr;      /* Input Pointer */
 
     if (argc < 3)
     {   fprint (stderr, usage);
-	return 1;
+    return 1;
     }
 
     /* Skip leading whitespace. */
 
     for (ptr=argv[2];  *ptr && ((*ptr == ' ') || (*ptr == '\t'));  ++ptr)
-	continue;
+    continue;
 
     if (0 == stricmp (argv[1], "hf"))
     {
-	long val;		/* Hex Value */
-	sscanf (ptr, "%lx", &val);
-	printf ("%.10e\n", *(float*)(&val));
+    long val;       /* Hex Value */
+    sscanf (ptr, "%lx", &val);
+    printf ("%.10e\n", *(float*)(&val));
     }
     else if (0 == strcmp(argv[1],"hd"))
     {
-	char   *end;		/* Input String Tail Pointer */
-	double  real;		/* Double Precision Real Value */
-	long    val_mslw;	/* Hex Val (Most-Sig. LongWord) */
-	long    val_lslw;	/* Hex Val (Least-Sig. LongWord) */
+    char   *end;        /* Input String Tail Pointer */
+    double  real;       /* Double Precision Real Value */
+    long    val_mslw;   /* Hex Val (Most-Sig. LongWord) */
+    long    val_lslw;   /* Hex Val (Least-Sig. LongWord) */
 
-	/* Find the end of the hex string. */
-	for (end=ptr;  *end;  ++end)
-	    ;
-	if ((end-ptr) < 8)		/* Less than 8 hex digits */
-	{   sscanf (ptr, "%lx", &val_lslw);
-	    val_mslw = 0;
-	}
-	else			/* At least 8 hex digits */
-	{   sscanf (end-8, "%lx", &val_lslw);
-	    end[-8] = 0;
-	    sscanf (ptr, "%lx", &val_mslw);
-	}
+    /* Find the end of the hex string. */
+    for (end=ptr;  *end;  ++end)
+        ;
+    if ((end-ptr) < 8)      /* Less than 8 hex digits */
+    {   sscanf (ptr, "%lx", &val_lslw);
+        val_mslw = 0;
+    }
+    else            /* At least 8 hex digits */
+    {   sscanf (end-8, "%lx", &val_lslw);
+        end[-8] = 0;
+        sscanf (ptr, "%lx", &val_mslw);
+    }
 
         // Note that this does little-endian (Intel)
 
-	((long*)(&real))[0] = val_lslw;
-	((long*)(&real))[1] = val_mslw;
-	printf ("%.20le\n", real);
+    ((long*)(&real))[0] = val_lslw;
+    ((long*)(&real))[1] = val_mslw;
+    printf ("%.20le\n", real);
     }
     else if (0 == strcmp(argv[1],"fh"))
     {
-	float real_float;	/* Single-Precision Real Value */
-	int   intval;
+    float real_float;   /* Single-Precision Real Value */
+    int   intval;
 
-	if (((*ptr < '0')||('9' < *ptr)) && (*ptr != '.') && (*ptr != '-'))
-	{   fprint (stderr, usage);
-	    fprintf (stderr, "\"%s\" is not a floating point number.\n", ptr);
-	    return 1;
-	}
+    if (((*ptr < '0')||('9' < *ptr)) && (*ptr != '.') && (*ptr != '-'))
+    {   fprint (stderr, usage);
+        fprintf (stderr, "\"%s\" is not a floating point number.\n", ptr);
+        return 1;
+    }
 
-	sscanf (ptr, "%f",  &real_float);
+    sscanf (ptr, "%f",  &real_float);
 
-	intval = *((long*)(&real_float));
+    intval = *((long*)(&real_float));
 
-	printf ("0x%08lx\n", intval);
+    printf ("0x%08lx\n", intval);
 
         PrintBinary (intval, 31, 31);
         putchar ('.');
@@ -105,34 +105,34 @@ int  main  (int argc, char *argv[])
     }
     else if (0 == strcmp(argv[1],"dh"))
     {
-	double  real_double;	/* Double-Precision Real Value */
-	long   *longptr;		/* For Hex Values */
+    double  real_double;    /* Double-Precision Real Value */
+    long   *longptr;        /* For Hex Values */
 
-	if (((*ptr < '0')||('9' < *ptr)) && (*ptr != '.') && (*ptr != '-'))
-	{   fprint (stderr, usage);
-	    fprintf (stderr, "\"%s\" is not a floating point number.\n", ptr);
-	    return 1;
-	}
+    if (((*ptr < '0')||('9' < *ptr)) && (*ptr != '.') && (*ptr != '-'))
+    {   fprint (stderr, usage);
+        fprintf (stderr, "\"%s\" is not a floating point number.\n", ptr);
+        return 1;
+    }
 
-	sscanf (ptr, "%lf", &real_double);
-	longptr = (long*)(&real_double);
+    sscanf (ptr, "%lf", &real_double);
+    longptr = (long*)(&real_double);
 
         // Note - this is coded for reverse endian (Intel).
 
-	printf ("0x%08lx%08lx\n", longptr[1], longptr[0]);
+    printf ("0x%08lx%08lx\n", longptr[1], longptr[0]);
 
-	PrintBinary (longptr[1], 31, 31);
-	putchar ('.');
-	PrintBinary (longptr[1], 30, 20);
-	putchar ('.');
-	PrintBinary (longptr[1], 19,  0);
-	PrintBinary (longptr[0], 31,  0);
-	putchar ('\n');
+    PrintBinary (longptr[1], 31, 31);
+    putchar ('.');
+    PrintBinary (longptr[1], 30, 20);
+    putchar ('.');
+    PrintBinary (longptr[1], 19,  0);
+    PrintBinary (longptr[0], 31,  0);
+    putchar ('\n');
     }
     else
     {   fprint (stderr, usage);
-	printf ("Unknown conversion type (%s)\n", argv[1]);
-	return 1;
+    printf ("Unknown conversion type (%s)\n", argv[1]);
+    return 1;
     }
 
     return 0;
