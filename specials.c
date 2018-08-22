@@ -13,14 +13,14 @@
 char *sprint (float n)
 {
     static char buff[256];
-    sprintf (buff, "% f (%08x)", n, *(int*)(&n));
+    sprintf_s (buff, sizeof(buff), "% f (%08x)", n, *(int*)(&n));
     return buff;
 }
 
 char *dprint (double n)
 {
     static char buff[256];
-    sprintf (buff, "% lf (%08x%08x)", n, ((int*)(&n))[1], ((int*)(&n))[0]);
+    sprintf_s (buff, sizeof(buff), "% lf (%08x%08x)", n, ((int*)(&n))[1], ((int*)(&n))[0]);
     return buff;
 }
 
