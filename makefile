@@ -32,7 +32,7 @@ specials: $(outDir)\specials.exe
 $(outDir)\epsilon-bad.exe: epsilon-bad.cpp
     cl $(cppOptions) $? -Fe$@ -Fo$(objDir)\epsilon-bad.obj
 
-$(outDir)\specials.exe: specials.c
+$(outDir)\specials.exe: specials.cpp
     cl $(cppOptions) $? -Fe$@ -Fo$(objDir)\specials.obj
 
 $(outDir)\hexfloat.exe: hexfloat.cpp
