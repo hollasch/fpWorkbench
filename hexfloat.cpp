@@ -9,31 +9,45 @@
 #include <string.h>
 
 
-    /***  Macro Definitions  ***/
+char usage[] = R"(
+hexfloat:  Convert between hexadecimal and floating-point numbers
+usage   :  hexfloat <conversion> <number>
 
-#define print(s)            fputs(s,stdout)
-#define fprint(stream,s)    fputs(s,stream)
+    <conversion> can be one of the following:
+
+    hf:  Convert <number> from hexadecimal to float
+    hd:  Convert <number> from hexadecimal to double
+    fh:  Convert <number> from float  to hexadecimal
+    dh:  Convert <number> from double to hexadecimal
+)";
 
 
-    /***  Usage Statement  ***/
+void print (char* string) {
+    fputs (string, stdout);
+}
 
-char usage[] = "\n\
-hexfloat:  Convert between hexadecimal and floating-point numbers\n\
-usage   :  hexfloat <conversion> <number>\n\
-\n\
-    <conversion> can be one of the following:\n\
-\n\
-    hf:  Convert <number> from hexadecimal to float\n\
-    hd:  Convert <number> from hexadecimal to double\n\
-    fh:  Convert <number> from float  to hexadecimal\n\
-    dh:  Convert <number> from double to hexadecimal\n\
-\n";
+void fprint (FILE* stream, char* string) {
+    fputs (string, stream);
+}
 
-void   PrintBinary (int value, int highbit, int lowbit);
+
+void PrintBinary (int x, int start, int end)
+{
+    // Print portion of an integer in binary notation.
+
+    unsigned int mask    = 1 << start;
+    unsigned int endmask = 1 << end;
+
+    while (mask >= endmask) {
+        putchar ((mask & x) ? '1' : '0');
+        mask >>= 1;
+    }
+}
+
 
 /**************************************************************************/
 
-int  main  (int argc, char *argv[])
+int main (int argc, char *argv[])
 {
     char *ptr;      /* Input Pointer */
 
@@ -47,10 +61,10 @@ int  main  (int argc, char *argv[])
     for (ptr=argv[2];  *ptr && ((*ptr == ' ') || (*ptr == '\t'));  ++ptr)
         continue;
 
-    if (0 == stricmp (argv[1], "hf")) {
+    if (0 == _stricmp (argv[1], "hf")) {
 
         long val;       /* Hex Value */
-        sscanf (ptr, "%lx", &val);
+        sscanf_s (ptr, "%lx", &val);
         printf ("%.10e\n", *(float*)(&val));
 
     } else if (0 == strcmp(argv[1],"hd")) {
@@ -64,12 +78,12 @@ int  main  (int argc, char *argv[])
         for (end=ptr;  *end;  ++end)
             ;
         if ((end-ptr) < 8) {    /* Less than 8 hex digits */
-            sscanf (ptr, "%lx", &val_lslw);
+            sscanf_s (ptr, "%lx", &val_lslw);
             val_mslw = 0;
         } else {          /* At least 8 hex digits */
-            sscanf (end-8, "%lx", &val_lslw);
+            sscanf_s (end-8, "%lx", &val_lslw);
             end[-8] = 0;
-            sscanf (ptr, "%lx", &val_mslw);
+            sscanf_s (ptr, "%lx", &val_mslw);
         }
 
         // Note that this does little-endian (Intel)
@@ -89,7 +103,7 @@ int  main  (int argc, char *argv[])
             return 1;
         }
 
-        sscanf (ptr, "%f",  &real_float);
+        sscanf_s (ptr, "%f",  &real_float);
 
         intval = *((long*)(&real_float));
 
@@ -113,7 +127,7 @@ int  main  (int argc, char *argv[])
             return 1;
         }
 
-        sscanf (ptr, "%lf", &real_double);
+        sscanf_s (ptr, "%lf", &real_double);
         longptr = (long*)(&real_double);
 
         // Note - this is coded for reverse endian (Intel).
@@ -136,21 +150,4 @@ int  main  (int argc, char *argv[])
     }
 
     return 0;
-}
-
-
-
-/*****************************************************************************
-Print portion of an integer in binary notation.
-*****************************************************************************/
-
-void PrintBinary (int x, int start, int end)
-{
-    unsigned int mask    = 1 << start;
-    unsigned int endmask = 1 << end;
-
-    while (mask >= endmask) {
-        putchar ((mask & x) ? '1' : '0');
-        mask >>= 1;
-    }
 }
