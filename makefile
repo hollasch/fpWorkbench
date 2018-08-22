@@ -38,5 +38,5 @@ $(outDir)\specials.exe: specials.cpp
 $(outDir)\hexfloat.exe: hexfloat.cpp
     cl $(cppOptions) $? -Fe$@ -Fo$(objDir)\hexfloat.obj
 
-$(outDir)\fp.exe: fp.cpp
-    cl $(cppOptions) $? -Fe$@ -Fo$(objDir)\fp.obj
+$(outDir)\fp.exe: fp.cpp fp.h
+    cl $(cppOptions) fp.cpp -Fe$@ -Fo$(objDir)\fp.obj

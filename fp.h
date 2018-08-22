@@ -1,10 +1,11 @@
-/*==============================================================================
+/*==================================================================================================
 
-    The following classes provide easy access to the components of
-    single-precision IEEE 32-bit floating point values, and double-precision
-    IEEE 64-bit floating point values.
+    The following classes provide easy access to the components of single-precision IEEE 32-bit
+    floating point values, and double-precision IEEE 64-bit floating point values.
 
-==============================================================================*/
+==================================================================================================*/
+
+#include <cstdint>
 
 struct fp32
 {
@@ -12,37 +13,44 @@ struct fp32
 
     union {
 
-        unsigned int i;
+        uint32_t i;
 
         struct {
-            unsigned int mantissa:23;
-            unsigned int exponent:8;
-            unsigned int sign:1;
-        };
+            uint32_t mantissa:23;
+            uint32_t exponent:8;
+            uint32_t sign:1;
+        } bits;
 
         float f;
-    };
 
-    // Constructors. Note that with the exception of component-wise
-    // initialization and unsigned int initialization, the standard
-    // conversion from integral to floating-point values applies.
+    } components;
 
-    fp32 (int s, int e, int m) : sign(s), exponent(e), mantissa(m) {}
-    fp32 (unsigned int value)  : i(value) {}
+    // Constructors. Note that with the exception of component-wise initialization and uint32_t
+    // initialization, the standard conversion from integral to floating-point values applies.
 
-    fp32 ()                    : f(0.0)   {}
-    fp32 (int value)           : f(value) {}
-    fp32 (float value)         : f(value) {}
-    fp32 (double value)        : f(value) {}
+    fp32 (int s, int e, uint32_t m) {
+        components.bits.sign = s;
+        components.bits.exponent = e;
+        components.bits.mantissa = m;
+    }
 
-    // Next/previous representable value operations. These are only valid for
-    // finite values not on the edge of representation.
+    fp32 (uint32_t value) {
+        components.i = value;
+    }
 
-    fp32& operator++ () { ++i;  return *this; }
-    fp32& operator-- () { --i;  return *this; }
+    fp32 ()             { components.f = 0.0; }
+    fp32 (int value)    { components.f = static_cast<float>(value); }
+    fp32 (float value)  { components.f = value; }
+    fp32 (double value) { components.f = static_cast<float>(value); }
 
-    operator float ()        { return f; }
-    operator unsigned int () { return i; }
+    // Next/previous representable value operations. These are only valid for finite values not on
+    // the edge of representation.
+
+    fp32& operator++ () { ++components.i;  return *this; }
+    fp32& operator-- () { --components.i;  return *this; }
+
+    operator float ()    { return components.f; }
+    operator uint32_t () { return components.i; }
 };
 
 
@@ -54,36 +62,42 @@ struct fp64
 
     union {
 
-        unsigned __int64 i;
+        uint64_t i;
 
         struct {
-            unsigned __int64 mantissa:52;
-            unsigned __int64 exponent:11;
-            unsigned __int64 sign:1;
-        };
+            uint64_t mantissa:52;
+            uint64_t exponent:11;
+            uint64_t sign:1;
+        } bits;
 
         double f;
-    };
 
-    // Constructors. Note that with the exception of component-wise
-    // initialization and unsigned __int64 initialization, the standard
-    // conversion from integral to floating-point values applies.
-    
-    fp64 (int s, int e, __int64 m) : sign(s), exponent(e), mantissa(m) {}
-    fp64 (unsigned __int64 value)  : i(value) {}
+    } components;
 
-    fp64 ()                        : f(0.0)   {}
-    fp64 (int value)               : f(value) {}
-    fp64 (__int64 value)           : f(value) {}
-    fp64 (float value)             : f(value) {}
-    fp64 (double value)            : f(value) {}
+    // Constructors. Note that with the exception of component-wise initialization and uint64_t
+    // initialization, the standard conversion from integral to floating-point values applies.
 
-    // Next/previous representable value operations. These are only valid for
-    // finite values not on the edge of representation.
+    fp64 (int s, int e, uint64_t m) {
+        components.bits.sign = s;
+        components.bits.exponent = e;
+        components.bits.mantissa = m;
+    }
 
-    fp64& operator++ () { ++i;  return *this; }
-    fp64& operator-- () { --i;  return *this; }
+    fp64 (uint64_t value) {
+        components.i = value;
+    }
 
-    operator float ()            { return f; }
-    operator unsigned __int64 () { return i; }
+    fp64 ()               { components.f = 0.0;   }
+    fp64 (int value)      { components.f = static_cast<double>(value); }
+    fp64 (float value)    { components.f = value; }
+    fp64 (double value)   { components.f = value; }
+
+    // Next/previous representable value operations. These are only valid for finite values not on
+    // the edge of representation.
+
+    fp64& operator++ () { ++components.i;  return *this; }
+    fp64& operator-- () { --components.i;  return *this; }
+
+    operator float ()    { return static_cast<float>(components.f); }
+    operator uint64_t () { return components.i; }
 };
