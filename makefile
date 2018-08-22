@@ -30,13 +30,13 @@ specials: $(outDir)\specials.exe
 
 
 $(outDir)\epsilon-bad.exe: epsilon-bad.cpp
-    cl $(cppOptions) $? -Fe$@ -Fo$(objDir)/
+    cl $(cppOptions) $? -Fe$@ -Fo$(objDir)\epsilon-bad.obj
 
 $(outDir)\specials.exe: specials.c
-    cl $(cppOptions) $? -Fe$@ -Fo$(objDir)/
+    cl $(cppOptions) $? -Fe$@ -Fo$(objDir)\specials.obj
 
 $(outDir)\hexfloat.exe: hexfloat.c
-    cl $(cppOptions) $? -Fe$@ -Fo$(objDir)/
+    cl $(cppOptions) $? -Fe$@ -Fo$(objDir)\hexfloat.obj
 
 $(outDir)\fp.exe: fp.cpp
-    cl $(cppOptions) $? -Fe$@ -Fo$(objDir)/
+    cl $(cppOptions) $? -Fe$@ -Fo$(objDir)\fp.obj
