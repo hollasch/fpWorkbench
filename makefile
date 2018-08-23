@@ -3,40 +3,40 @@
 # a single C file.
 # ==================================================================================================
 
-cOptions=-nologo -W3 -I"%VCINSTALLDIR%/include" -Fo.\out\obj\ -EHsc
+build=build
+cOptions=-nologo -W3 -I"%VCINSTALLDIR%/include" -Fo$(build)\obj\ -EHsc
 cppOptions=-nologo -W4
-outDir=out
-objDir=$(outDir)\obj
+objDir=$(build)\obj
 
 all: createOutputDir epsilon-bad fp hexfloat specials
 
 #-------------------------------------------------------------------------------
 createOutputDir:
-    -mkdir 2>nul $(outDir)\obj
+    -mkdir 2>nul $(build)\obj
 
 clean:
 	-rmdir 2>nul /s /q $(objDir)
 
 clobber:
-    -rmdir 2>nul /s /q $(outDir)
+    -rmdir 2>nul /s /q $(build)
 
 fresh: clobber all
 
 #-------------------------------------------------------------------------------
-epsilon-bad: $(outDir)\epsilon-bad.exe
-fp: $(outDir)\fp.exe
-hexfloat: $(outDir)\hexfloat.exe
-specials: $(outDir)\specials.exe
+epsilon-bad: $(build)\epsilon-bad.exe
+fp: $(build)\fp.exe
+hexfloat: $(build)\hexfloat.exe
+specials: $(build)\specials.exe
 
 
-$(outDir)\epsilon-bad.exe: epsilon-bad.cpp
+$(build)\epsilon-bad.exe: epsilon-bad.cpp
     cl $(cppOptions) $? -Fe$@ -Fo$(objDir)\epsilon-bad.obj
 
-$(outDir)\specials.exe: specials.cpp
+$(build)\specials.exe: specials.cpp
     cl $(cppOptions) $? -Fe$@ -Fo$(objDir)\specials.obj
 
-$(outDir)\hexfloat.exe: hexfloat.cpp
+$(build)\hexfloat.exe: hexfloat.cpp
     cl $(cppOptions) $? -Fe$@ -Fo$(objDir)\hexfloat.obj
 
-$(outDir)\fp.exe: fp.cpp fp.h
+$(build)\fp.exe: fp.cpp fp.h
     cl $(cppOptions) fp.cpp -Fe$@ -Fo$(objDir)\fp.obj
