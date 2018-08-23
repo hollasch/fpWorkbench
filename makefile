@@ -4,7 +4,6 @@
 # ==================================================================================================
 
 build=build
-cOptions=-nologo -W3 -I"%VCINSTALLDIR%/include" -Fo$(build)\obj\ -EHsc
 cppOptions=-nologo -W4
 objDir=$(build)\obj
 
