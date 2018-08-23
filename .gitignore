@@ -1,4 +1,3 @@
-# Git Ignore file for 'hexfloat' project.
+# Git Ignore file for fpWorkbench project.
 
-*.exe
-*.obj
+build/
