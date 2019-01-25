@@ -7,6 +7,7 @@
 *******************************************************************************/
 
 #include <stdio.h>
+#include <cmath>
 
 
 
@@ -24,6 +25,11 @@ char *dprint (double n)
     return buff;
 }
 
+const char* boolStr(bool b)
+{
+    return b ? "true" : "false";
+}
+
 
 
 /* These helper functions perform out-of-range floating point operations
@@ -34,6 +40,21 @@ float  div_s ( float a,  float b) { return a / b; }
 
 double mul_d (double a, double b) { return a * b; }
 double div_d (double a, double b) { return a / b; }
+
+
+void PrintNaNOps()
+{
+    float snan = std::nanf("");
+
+    printf ("\nOperations with NaN:\n\n");
+
+    printf ("      NaN == 0 : %s\n", boolStr(snan == 0));
+    printf ("      NaN != 0 : %s\n", boolStr(snan != 0));
+    printf ("      NaN == 1 : %s\n", boolStr(snan == 1));
+    printf ("      NaN != 1 : %s\n", boolStr(snan != 1));
+    printf ("      NaN <  1 : %s\n", boolStr(snan < 1));
+    printf ("      NaN >  1 : %s\n", boolStr(snan > 1));
+}
 
 
 int main ()
@@ -95,5 +116,7 @@ int main ()
 
     nzeromul = snzero * 37;
     printf ("      -0 *  37 :  %s\n", sprint(snzero*37));
-    printf ("      -0 == +0 :   %s\n", (zero == snzero) ? "true" : "false");
+    printf ("      -0 == +0 :  %s\n", boolStr(zero == snzero));
+
+    PrintNaNOps();
 }
