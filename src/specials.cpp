@@ -1,14 +1,15 @@
-/*******************************************************************************
-
-  specials.c
-
-  This program prints out special values of the IEEE 754 floating-point format.
-
-*******************************************************************************/
+//==================================================================================================
+// specials.c
+//
+// This program prints out special values of the IEEE 754 floating-point format.
+//==================================================================================================
 
 #include <stdio.h>
 #include <cmath>
 
+#if defined _MSC_VER
+    #pragma warning(disable : 4723 4756)
+#endif
 
 
 char *sprint (float n)
@@ -31,12 +32,11 @@ const char* boolStr(bool b)
 }
 
 
+// These helper functions perform out-of-range floating point operations without triggering constant
+// arithmetic warnings from the compiler.
 
-/* These helper functions perform out-of-range floating point operations
-** without triggering constant arithmetic warnings from the compiler. */
-
-float  mul_s ( float a,  float b) { return a * b; }
-float  div_s ( float a,  float b) { return a / b; }
+float  mul_s (float a,  float b) { return a * b; }
+float  div_s (float a,  float b) { return a / b; }
 
 double mul_d (double a, double b) { return a * b; }
 double div_d (double a, double b) { return a / b; }
@@ -59,38 +59,38 @@ void PrintNaNOps()
 
 int main ()
 {
-    float  szero = 0;         /* Single Precision Zero */
-    float  snzero;            /* Single Precision Negative Zero */
-    float  sposinf, sneginf;  /* Single Precision + - Infinity */
-    float  sind;              /* Single Precision Indeterminate */
+    float  szero = 0;         // Single Precision Zero */
+    float  snzero;            // Single Precision Negative Zero
+    float  sposinf, sneginf;  // Single Precision + - Infinity
+    float  sind;              // Single Precision Indeterminate
 
-    double dzero = 0;         /* Double Precision Zero */
-    double dnzero;            /* Double Precision Negative Zero */
-    double dposinf, dneginf;  /* Double Precision + - Infinity */
-    double dind;              /* Double Precision Indeterminate */
+    double dzero = 0;         // Double Precision Zero
+    double dnzero;            // Double Precision Negative Zero
+    double dposinf, dneginf;  // Double Precision + - Infinity
+    double dind;              // Double Precision Indeterminate
 
-    float one    =  1;        /* Simple Constants */
+    float one    =  1;        // Simple Constants
     float negone = -1;
     float zero   =  0;
 
-    float nzeromul = 0;       /* Negative-Zero Multiply Operation */
+    float nzeromul = 0;       // Negative-Zero Multiply Operation
 
-    /* Set up special values. */
+    // Set up special values.
 
     *(int*)(&snzero) = 0x80000000;
     ((int*)(&dnzero))[1] = 0x80000000;
     ((int*)(&dnzero))[0] = 0x00000000;
 
-    sposinf = mul_s ((float)1e30, (float)1e30);     /* Overflow to infinity. */
+    sposinf = mul_s ((float)1e30, (float)1e30);     // Overflow to infinity.
     dposinf = mul_d (1e200, 1e200);
 
-    sneginf = -sposinf;               /* Get negative infinity. */
+    sneginf = -sposinf;               // Get negative infinity.
     dneginf = -dposinf;
 
-    sind = div_s (sposinf, sposinf);  /* Generate indeterminate values. */
+    sind = div_s (sposinf, sposinf);  // Generate indeterminate values.
     dind = div_d (dposinf, dposinf);
 
-    /* Now print out special values. */
+    // Now print out special values.
 
     printf ("\n");
 

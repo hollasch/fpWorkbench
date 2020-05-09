@@ -7,6 +7,11 @@
 
 #include <cstdint>
 
+#if defined _MSC_VER
+    #pragma warning(disable:4756)
+#endif
+
+
 struct fp32
 {
     // Union of Alternate Representations
@@ -78,9 +83,9 @@ struct fp64
     // initialization, the standard conversion from integral to floating-point values applies.
 
     fp64 (int s, int e, uint64_t m) {
-        components.bits.sign = s;
-        components.bits.exponent = e;
-        components.bits.mantissa = m;
+        components.bits.sign = s & 0x1;
+        components.bits.exponent = e & 0x7ff;
+        components.bits.mantissa = m & 0x000fffff;
     }
 
     fp64 (uint64_t value) {
