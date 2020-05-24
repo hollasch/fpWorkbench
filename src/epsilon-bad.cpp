@@ -1,7 +1,7 @@
 #include <stdio.h>
 
-union intfloat   // This union allows for bit manipulation of floating-point
-{   float f;     // values.
+union intfloat { // This union allows for bit manipulation of floating-point
+    float f;     // values.
     int   i;
 };
 
@@ -11,7 +11,7 @@ union intfloat   // This union allows for bit manipulation of floating-point
 // down but which we don't understand fully. I think. Maybe 0.00001 would be
 // better, perhaps, but then again I'm not sure why.
 
-const float epsilon { 1e-6f };
+const float epsilon {1e-6f};
 
 
 //--------------------------------------------------------------------------------------------------
@@ -20,8 +20,8 @@ void PrintBinary (int x, int start, int end) {
     unsigned int mask    = 1 << start;
     unsigned int endmask = 1 << end;
 
-    while (mask >= endmask)
-    {   putchar ((mask & x) ? '1' : '0');
+    while (mask >= endmask) {
+        putchar ((mask & x) ? '1' : '0');
         mask >>= 1;
     }
 }
@@ -30,7 +30,7 @@ void PrintBinary (int x, int start, int end) {
 //--------------------------------------------------------------------------------------------------
 void PrintVal (intfloat x) {
     // Print the floating-point and binary representations of a value.
-    printf ("%.12f [", x.f);
+    printf ("%15.12f [", x.f);
     PrintBinary (x.i, 31, 31);
     printf (":");
     PrintBinary (x.i, 30, 23);
@@ -50,10 +50,9 @@ void PrintVal (float f) {
 
 
 //--------------------------------------------------------------------------------------------------
-void main ()
-{
-    intfloat a = { 16.0f };
-    intfloat b = { 16.0f };
+void main () {
+    intfloat a = {16.0f};
+    intfloat b = {16.0f};
 
     // Increment b so that it's the smallest representable number that is
     // larger than a.
@@ -65,11 +64,7 @@ void main ()
     fputs("a       = ", stdout); PrintVal(a);
     fputs("b       = ", stdout); PrintVal(b);
     fputs("epsilon = ", stdout); PrintVal(epsilon);
-
-    // Print the represented difference between b and a.
-
-    fputs ("b-a = ", stdout);
-    PrintVal (b.f - a.f);
+    fputs("b - a   = ", stdout); PrintVal(b.f - a.f);
 
     // Determine if (b-a) is less than epsilon. Since b is the smallest
     // representable number larger than a, if this test fails, then epsilon
