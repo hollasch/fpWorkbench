@@ -13,10 +13,43 @@ union intfloat   // This union allows for bit manipulation of floating-point
 
 const float epsilon { 1e-6f };
 
-void PrintBinary (int x, int start, int end);
-void PrintVal    (intfloat);
-void PrintVal    (float);
 
+//--------------------------------------------------------------------------------------------------
+void PrintBinary (int x, int start, int end) {
+    // Helper routine to print out a range of binary bits from a number.
+    unsigned int mask    = 1 << start;
+    unsigned int endmask = 1 << end;
+
+    while (mask >= endmask)
+    {   putchar ((mask & x) ? '1' : '0');
+        mask >>= 1;
+    }
+}
+
+
+//--------------------------------------------------------------------------------------------------
+void PrintVal (intfloat x) {
+    // Print the floating-point and binary representations of a value.
+    printf ("%.12f [", x.f);
+    PrintBinary (x.i, 31, 31);
+    printf (":");
+    PrintBinary (x.i, 30, 23);
+    printf (":");
+    PrintBinary (x.i, 22,  0);
+    printf ("]\n");
+}
+
+
+//--------------------------------------------------------------------------------------------------
+void PrintVal (float f) {
+    // Print the value of a floating point number.
+    intfloat x;
+    x.f = f;
+    PrintVal (x);
+}
+
+
+//--------------------------------------------------------------------------------------------------
 void main ()
 {
     intfloat a = { 16.0f };
@@ -29,13 +62,13 @@ void main ()
 
     // Print out the values we'll be working with.
 
-    printf ("a       = "); PrintVal(a);
-    printf ("b       = "); PrintVal(b);
-    printf ("epsilon = "); PrintVal(epsilon);
+    fputs("a       = ", stdout); PrintVal(a);
+    fputs("b       = ", stdout); PrintVal(b);
+    fputs("epsilon = ", stdout); PrintVal(epsilon);
 
     // Print the represented difference between b and a.
 
-    printf ("b-a = ");
+    fputs ("b-a = ", stdout);
     PrintVal (b.f - a.f);
 
     // Determine if (b-a) is less than epsilon. Since b is the smallest
@@ -45,46 +78,4 @@ void main ()
 
     printf ("(b-a) < epsilon == %s\n",
         ((b.f-a.f) < epsilon) ? "true" : "false");
-}
-
-// ---------------------------------------------------------------------------
-// Print the floating-point and binary representations of a value.
-// ---------------------------------------------------------------------------
-
-void PrintVal (intfloat x)
-{
-    printf ("%.12f [", x.f);
-    PrintBinary (x.i, 31, 31);
-    printf (":");
-    PrintBinary (x.i, 30, 23);
-    printf (":");
-    PrintBinary (x.i, 22,  0);
-    printf ("]\n");
-}
-
-
-// ---------------------------------------------------------------------------
-// Print the value of a floating point number.
-// ---------------------------------------------------------------------------
-
-void PrintVal (float f)
-{
-    intfloat x;
-    x.f = f;
-    PrintVal (x);
-}
-
-// ---------------------------------------------------------------------------
-// Helper routine to print out a range of binary bits from a number.
-// ---------------------------------------------------------------------------
-
-void PrintBinary (int x, int start, int end)
-{
-    unsigned int mask    = 1 << start;
-    unsigned int endmask = 1 << end;
-
-    while (mask >= endmask)
-    {   putchar ((mask & x) ? '1' : '0');
-        mask >>= 1;
-    }
 }
