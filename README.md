@@ -1,20 +1,19 @@
+
 Floating-Point Workbench
 ====================================================================================================
 
-This repo is just a random assortment of test programs for exploring floating-point numbers (IEEE
-754).
-
-For an explanation of IEEE 754 floating point and how it works, see [_IEEE Standard 754 Floating
-Point Numbers_][fp].
+This repo contains a random assortment of test programs for exploring (IEEE 754) floating-point
+numbers. For an explanation of IEEE 754 floating point and how it works, see
+[_IEEE Standard 754 Floating Point Numbers_][fp].
 
 
 Building
 ----------
-This project uses the CMake build tool. CMake is a meta-build system that locates and uses your
-local development tools to build the project if possible.
+This project uses the [CMake][] CMake build tool. CMake is a meta-build system that locates and uses
+your local development tools to build the project if possible.
 
-To build, first install [CMake][https://cmake.org/]. Then go to the project root directory and run
-the following command:
+To build, first install [CMake][]. Then go to the project root directory and run the following
+command:
 
     cmake -B build
 
@@ -32,7 +31,10 @@ You can find the built release executables in `build/Release/`.
 
 
 ----------------------------------------------------------------------------------------------------
-Steve Hollasch <steve@hollasch.net><br>
-https://github.com/hollasch/fpWorkbench
+https://github.com/hollasch/fpWorkbench<br>
+Steve Hollasch (steve@hollasch.net)
 
-[fp]: https://steve.hollasch.net/cgindex/coding/ieeefloat.html
+
+
+[CMake]: https://cmake.org/
+[fp]:    https://steve.hollasch.net/cgindex/coding/ieeefloat.html
