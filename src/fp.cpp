@@ -1,6 +1,7 @@
 #include "fp.h"
+
+#include <limits>
 #include <stdio.h>
-#include <float.h>
 
 
 // Constants
@@ -47,13 +48,10 @@ const double DoubleNegSnanMax   { fp64 (1, 2047, 0x7FFFFFFFFFFFF) };
 const double DoublePosSnanMin   { fp64 (0, 2047, 0x0000000000001) };
 const double DoubleNegSnanMin   { fp64 (1, 2047, 0x0000000000001) };
 
-
 const fp32 c_one  (1.0f);
 const fp32 c_pinf (0x7f800000u);
 const fp32 c_ninf (0xff800000u);
 const fp32 c_qnan (0x7fffffffu);
-const fp32 c_fmin (FLT_MIN);
-const fp32 c_fmax (FLT_MAX);
 
 
 
@@ -105,8 +103,8 @@ void main ()
     fp32 fmax;
     fp32 one;
 
-    fmin = FLT_MIN;
-    fmax = FLT_MAX;
+    fmin = std::numeric_limits<float>::min();
+    fmax = std::numeric_limits<float>::max();
     one  = 1.0;
 
     print ("pinf ", c_pinf);
@@ -141,8 +139,8 @@ void main ()
     fp64 dmax;
     fp64 done;
 
-    dmin = DBL_MIN;
-    dmax = DBL_MAX;
+    dmin = std::numeric_limits<double>::min();
+    dmax = std::numeric_limits<double>::max();
     done = 1.0;
 
     fp64 dpinf (c_pinf.components.f);
