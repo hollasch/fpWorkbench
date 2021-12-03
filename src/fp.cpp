@@ -5,47 +5,47 @@
 
 // Constants
 
-const float  SinglePosZero            { fp32 (0,   0, 0x000000) };
-const float  SingleNegZero            { fp32 (1,   0, 0x000000) };
-const float  SinglePosInfinity        { fp32 (0, 255, 0x000000) };
-const float  SingleNegInfinity        { fp32 (1, 255, 0x000000) };
-const float  SinglePosNormMin        { fp32 (0,   1, 0x000000) };
-const float  SingleNegNormMin        { fp32 (1,   1, 0x000000) };
-const float  SinglePosNormMax        { fp32 (0, 254, 0x7fffff) };
-const float  SingleNegNormMax        { fp32 (1, 254, 0x7fffff) };
-const float  SinglePosDenormMin      { fp32 (0,   0, 0x000001) };
-const float  SingleNegDenormMin      { fp32 (1,   0, 0x000001) };
-const float  SinglePosDenormMax      { fp32 (0,   0, 0x7fffff) };
-const float  SingleNegDenormMax      { fp32 (0,   0, 0x7fffff) };
+const float  SinglePosZero      { fp32 (0,   0, 0x000000) };
+const float  SingleNegZero      { fp32 (1,   0, 0x000000) };
+const float  SinglePosInfinity  { fp32 (0, 255, 0x000000) };
+const float  SingleNegInfinity  { fp32 (1, 255, 0x000000) };
+const float  SinglePosNormMin   { fp32 (0,   1, 0x000000) };
+const float  SingleNegNormMin   { fp32 (1,   1, 0x000000) };
+const float  SinglePosNormMax   { fp32 (0, 254, 0x7fffff) };
+const float  SingleNegNormMax   { fp32 (1, 254, 0x7fffff) };
+const float  SinglePosDenormMin { fp32 (0,   0, 0x000001) };
+const float  SingleNegDenormMin { fp32 (1,   0, 0x000001) };
+const float  SinglePosDenormMax { fp32 (0,   0, 0x7fffff) };
+const float  SingleNegDenormMax { fp32 (0,   0, 0x7fffff) };
 const float  SingleNegQnanIndef { fp32 (1, 255, 0x400000) };
-const float  SinglePosQnanMin        { fp32 (0, 255, 0x400000) };
-const float  SinglePosQnanMax        { fp32 (0, 255, 0x7fffff) };
-const float  SingleNegQnanMax        { fp32 (1, 255, 0x7fffff) };
-const float  SinglePosSnanMax        { fp32 (0, 255, 0x3fffff) };
-const float  SingleNegSnanMax        { fp32 (1, 255, 0x3fffff) };
-const float  SinglePosSnanMin        { fp32 (0, 255, 0x000001) };
-const float  SingleNegSnanMin        { fp32 (1, 255, 0x000001) };
+const float  SinglePosQnanMin   { fp32 (0, 255, 0x400000) };
+const float  SinglePosQnanMax   { fp32 (0, 255, 0x7fffff) };
+const float  SingleNegQnanMax   { fp32 (1, 255, 0x7fffff) };
+const float  SinglePosSnanMax   { fp32 (0, 255, 0x3fffff) };
+const float  SingleNegSnanMax   { fp32 (1, 255, 0x3fffff) };
+const float  SinglePosSnanMin   { fp32 (0, 255, 0x000001) };
+const float  SingleNegSnanMin   { fp32 (1, 255, 0x000001) };
 
-const double DoublePosZero            { fp64 (0,    0, 0x0000000000000) };
-const double DoubleNegZero            { fp64 (1,    0, 0x0000000000000) };
-const double DoublePosInfinity        { fp64 (0, 2047, 0x0000000000000) };
-const double DoubleNegInfinity        { fp64 (1, 2047, 0x0000000000000) };
-const double DoublePosNormMin        { fp64 (0,    1, 0x0000000000000) };
-const double DoubleNegNormMin        { fp64 (1,    1, 0x0000000000000) };
-const double DoublePosNormMax        { fp64 (0, 2046, 0xFFFFFFFFFFFFF) };
-const double DoubleNegNormMax        { fp64 (1, 2046, 0xFFFFFFFFFFFFF) };
-const double DoublePosDenormMin      { fp64 (0,    0, 0x0000000000001) };
-const double DoubleNegDenormMin      { fp64 (1,    0, 0x0000000000001) };
-const double DoublePosDenormMax      { fp64 (0,    0, 0xFFFFFFFFFFFFF) };
-const double DoubleNegDenormMax      { fp64 (1,    0, 0xFFFFFFFFFFFFF) };
+const double DoublePosZero      { fp64 (0,    0, 0x0000000000000) };
+const double DoubleNegZero      { fp64 (1,    0, 0x0000000000000) };
+const double DoublePosInfinity  { fp64 (0, 2047, 0x0000000000000) };
+const double DoubleNegInfinity  { fp64 (1, 2047, 0x0000000000000) };
+const double DoublePosNormMin   { fp64 (0,    1, 0x0000000000000) };
+const double DoubleNegNormMin   { fp64 (1,    1, 0x0000000000000) };
+const double DoublePosNormMax   { fp64 (0, 2046, 0xFFFFFFFFFFFFF) };
+const double DoubleNegNormMax   { fp64 (1, 2046, 0xFFFFFFFFFFFFF) };
+const double DoublePosDenormMin { fp64 (0,    0, 0x0000000000001) };
+const double DoubleNegDenormMin { fp64 (1,    0, 0x0000000000001) };
+const double DoublePosDenormMax { fp64 (0,    0, 0xFFFFFFFFFFFFF) };
+const double DoubleNegDenormMax { fp64 (1,    0, 0xFFFFFFFFFFFFF) };
 const double DoubleNegQnanIndef { fp64 (1, 2047, 0x8000000000000) };
-const double DoublePosQnanMax        { fp64 (0, 2047, 0xFFFFFFFFFFFFF) };
-const double DoubleNegQnanMax        { fp64 (1, 2047, 0xFFFFFFFFFFFFF) };
-const double DoublePosQnanMin        { fp64 (0, 2047, 0x8000000000000) };
-const double DoublePosSnanMax        { fp64 (0, 2047, 0x7FFFFFFFFFFFF) };
-const double DoubleNegSnanMax        { fp64 (1, 2047, 0x7FFFFFFFFFFFF) };
-const double DoublePosSnanMin        { fp64 (0, 2047, 0x0000000000001) };
-const double DoubleNegSnanMin        { fp64 (1, 2047, 0x0000000000001) };
+const double DoublePosQnanMax   { fp64 (0, 2047, 0xFFFFFFFFFFFFF) };
+const double DoubleNegQnanMax   { fp64 (1, 2047, 0xFFFFFFFFFFFFF) };
+const double DoublePosQnanMin   { fp64 (0, 2047, 0x8000000000000) };
+const double DoublePosSnanMax   { fp64 (0, 2047, 0x7FFFFFFFFFFFF) };
+const double DoubleNegSnanMax   { fp64 (1, 2047, 0x7FFFFFFFFFFFF) };
+const double DoublePosSnanMin   { fp64 (0, 2047, 0x0000000000001) };
+const double DoubleNegSnanMin   { fp64 (1, 2047, 0x0000000000001) };
 
 
 const fp32 c_one  (1.0f);
@@ -118,11 +118,13 @@ void main ()
 
     printf("\n");
     print ("one       ", one);
-    ++one;         print ("++one     ", one);
-    --one;         print ("--one     ", one);
-    --one;         print ("--one     ", one);
-    one.components.i += 64;   print ("one+64    ", one);
-    one.components.f += 2.0;  print ("one+64+2.0", one);
+    print ("++one     ", ++one);
+    print ("--one     ", --one);
+    print ("--one     ", --one);
+    one.components.i += 64;
+    print ("one+64    ", one);
+    one.components.f += 2.0;
+    print ("one+64+2.0", one);
 
     one = 1;
     float        onef = one;
@@ -156,11 +158,14 @@ void main ()
 
     printf ("\n");
     print ("done       ", done);
-    ++done;  print("++done     ", done);
-    --done;  print("--done     ", done);
-    --done;  print("--done     ", done);
-    done.components.i += 64;   print("done+64    ", done);
-    done.components.f += 2.0;  print("done+64+2.0", done);
+    print("++done     ", ++done);
+    print("--done     ", --done);
+    print("--done     ", --done);
+
+    done.components.i += 64;
+    print("done+64    ", done);
+    done.components.f += 2.0;
+    print("done+64+2.0", done);
 
     done = 1.0;
     double           doned = done;
