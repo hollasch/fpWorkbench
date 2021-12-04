@@ -66,6 +66,7 @@ void main ()
     print ("-infinity()    ", fp32{-std::numeric_limits<float>::infinity()});
     print ("quiet_NaN()    ", fp32{std::numeric_limits<float>::quiet_NaN()});
     print ("signaling_NaN()", fp32{std::numeric_limits<float>::signaling_NaN()});
+    print ("Real SNaN()    ", fp32{0, 255, 1});
 
     printf("\n");
     print ("+Zero          ", fp32{0,   0, 0x000000});
