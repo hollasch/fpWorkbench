@@ -48,6 +48,12 @@ struct fp32
     fp32 (float value)  { components.f = value; }
     fp32 (double value) { components.f = static_cast<float>(value); }
 
+    fp32 (const fp32& other) {
+        components.bits.sign     = other.components.bits.sign;
+        components.bits.exponent = other.components.bits.exponent;
+        components.bits.mantissa = other.components.bits.mantissa;
+    }
+
     // Next/previous representable value operations. These are only valid for finite values not on
     // the edge of representation.
 
@@ -85,7 +91,7 @@ struct fp64
     fp64 (int s, int e, uint64_t m) {
         components.bits.sign = s & 0x1;
         components.bits.exponent = e & 0x7ff;
-        components.bits.mantissa = m & 0x000fffff;
+        components.bits.mantissa = m & 0x000f'ffff'ffff'ffffUL;
     }
 
     fp64 (uint64_t value) {
@@ -96,6 +102,12 @@ struct fp64
     fp64 (int value)      { components.f = static_cast<double>(value); }
     fp64 (float value)    { components.f = value; }
     fp64 (double value)   { components.f = value; }
+
+    fp64 (const fp64& other) {
+        components.bits.sign     = other.components.bits.sign;
+        components.bits.exponent = other.components.bits.exponent;
+        components.bits.mantissa = other.components.bits.mantissa;
+    }
 
     // Next/previous representable value operations. These are only valid for finite values not on
     // the edge of representation.
