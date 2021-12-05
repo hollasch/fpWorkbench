@@ -64,6 +64,7 @@ void main ()
 
     print ("+infinity()    ", fp32{std::numeric_limits<float>::infinity()});
     print ("-infinity()    ", fp32{-std::numeric_limits<float>::infinity()});
+    print ("epsilon()      ", fp32{std::numeric_limits<float>::epsilon()});
     print ("quiet_NaN()    ", fp32{std::numeric_limits<float>::quiet_NaN()});
     print ("signaling_NaN()", fp32{std::numeric_limits<float>::signaling_NaN()});
     print ("Real SNaN()    ", fp32{0, 255, 1});
@@ -104,6 +105,7 @@ void main ()
 
     print ("+infinity()    ", fp64{std::numeric_limits<double>::infinity()});
     print ("-infinity()    ", fp64{-std::numeric_limits<double>::infinity()});
+    print ("epsilon()      ", fp64{std::numeric_limits<double>::epsilon()});
     print ("quiet_NaN()    ", fp64{std::numeric_limits<double>::quiet_NaN()});
     print ("signaling_NaN()", fp64{std::numeric_limits<double>::signaling_NaN()});
 
