@@ -9,6 +9,8 @@
 #include <string.h>
 
 
+static auto version = "hexfloat 1.0.0 | 2022-04-07 | https://github.com/hollasch/fpWorkbench";
+
 char usage[] = R"(
 hexfloat:  Convert between hexadecimal and floating-point numbers
 usage   :  hexfloat <conversion> <number>
@@ -49,7 +51,10 @@ void PrintBinary (int x, int start, int end)
 
 int main (int argc, char *argv[])
 {
-    char *ptr;      /* Input Pointer */
+    if (0 == _stricmp(argv[1], "--version")) {
+        printf("%s\n", version);
+        return 0;
+    }
 
     if (argc < 3) {
         fprint (stderr, usage);
@@ -58,6 +63,7 @@ int main (int argc, char *argv[])
 
     /* Skip leading whitespace. */
 
+    char *ptr;      /* Input Pointer */
     for (ptr=argv[2];  *ptr && ((*ptr == ' ') || (*ptr == '\t'));  ++ptr)
         continue;
 
