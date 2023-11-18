@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.2...3.27.8)
 
 project (fp LANGUAGES CXX)
 add_executable (fp src/fp.cpp)
