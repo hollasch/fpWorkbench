@@ -9,7 +9,7 @@
 #include <string.h>
 
 
-static auto version = "hexfloat 1.0.0 | 2022-04-07 | https://github.com/hollasch/fpWorkbench";
+static auto version = "hexfloat 2.0.0-alpha | 2023-12-10 | https://github.com/hollasch/fpWorkbench";
 
 char usage[] = R"(
 hexfloat:  Convert between hexadecimal and floating-point numbers
@@ -17,10 +17,10 @@ usage   :  hexfloat <conversion> <number>
 
     <conversion> can be one of the following:
 
-    hf:  Convert <number> from hexadecimal to float
-    hd:  Convert <number> from hexadecimal to double
-    fh:  Convert <number> from float  to hexadecimal
-    dh:  Convert <number> from double to hexadecimal
+    hex-single:  Convert from hexadecimal to single-precision float
+    hex-double:  Convert from hexadecimal to double-precision float
+    single-hex:  Convert from single-precision float to hexadecimal
+    double-hex:  Convert from double-precision float to hexadecimal
 )";
 
 
@@ -67,26 +67,31 @@ int main (int argc, char *argv[])
     for (ptr=argv[2];  *ptr && ((*ptr == ' ') || (*ptr == '\t'));  ++ptr)
         continue;
 
-    if (0 == _stricmp (argv[1], "hf")) {
+    if (0 == _stricmp (argv[1], "hex-single")) {
 
         long val;       /* Hex Value */
         sscanf_s (ptr, "%lx", &val);
-        printf ("%.10e\n", *(float*)(&val));
+        printf ("0x%08lx: %.10e\n", val, *(float*)(&val));
 
-    } else if (0 == strcmp(argv[1],"hd")) {
+    } else if (0 == strcmp(argv[1],"hex-double")) {
 
         char   *end;        /* Input String Tail Pointer */
         double  real;       /* Double Precision Real Value */
         long    val_mslw;   /* Hex Val (Most-Sig. LongWord) */
         long    val_lslw;   /* Hex Val (Least-Sig. LongWord) */
 
+        // Skip past any "0x" prefix.
+        if (ptr[0] == '0' && (ptr[1] == 'x' || ptr[1] == 'X'))
+            ptr += 2;
+
         /* Find the end of the hex string. */
         for (end=ptr;  *end;  ++end)
             ;
-        if ((end-ptr) < 8) {    /* Less than 8 hex digits */
+
+        if ((end-ptr) <= 8) {    /* Eight or fewer hex digits */
             sscanf_s (ptr, "%lx", &val_lslw);
             val_mslw = 0;
-        } else {          /* At least 8 hex digits */
+        } else {          /* More than eight hex digits */
             sscanf_s (end-8, "%lx", &val_lslw);
             end[-8] = 0;
             sscanf_s (ptr, "%lx", &val_mslw);
@@ -96,9 +101,10 @@ int main (int argc, char *argv[])
 
         ((long*)(&real))[0] = val_lslw;
         ((long*)(&real))[1] = val_mslw;
-        printf ("%.20le\n", real);
 
-    } else if (0 == strcmp(argv[1],"fh")) {
+        printf ("0x%08lx %08lx: %.20le\n", val_mslw, val_lslw, real);
+
+    } else if (0 == strcmp(argv[1],"single-hex")) {
 
         float real_float;   /* Single-Precision Real Value */
         int   intval;
@@ -122,7 +128,7 @@ int main (int argc, char *argv[])
         PrintBinary (intval, 22,  0);
         putchar ('\n');
 
-    } else if (0 == strcmp(argv[1],"dh")) {
+    } else if (0 == strcmp(argv[1],"double-hex")) {
 
         double  real_double;    /* Double-Precision Real Value */
         long   *longptr;        /* For Hex Values */
@@ -150,8 +156,7 @@ int main (int argc, char *argv[])
 
     } else {
 
-        fprint (stderr, usage);
-        printf ("Unknown conversion type (%s)\n", argv[1]);
+        printf ("hexfloat: Unknown conversion type (%s)\n", argv[1]);
         return 1;
     }
 
