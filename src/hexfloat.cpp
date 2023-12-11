@@ -1,9 +1,8 @@
-/*****************************************************************************
-**  This program translates between float and double values and their
-**  hexadecimal counterparts.  If the program is called with a command-line
-**  argument, then it prints out the appropriate information.  If not command-
-**  line arguments are given, then it goes into interactive mode.
-*****************************************************************************/
+/***************************************************************************************************
+This program translates between float and double values and their hexadecimal counterparts.  If the
+program is called with a command-line argument, then it prints out the appropriate information.  If
+not command- line arguments are given, then it goes into interactive mode.
+***************************************************************************************************/
 
 #include <stdio.h>
 #include <string.h>
@@ -13,15 +12,30 @@ static auto version = "hexfloat 2.0.0-alpha | 2023-12-10 | https://github.com/ho
 
 char usage[] = R"(
 hexfloat:  Convert between hexadecimal and floating-point numbers
-usage   :  hexfloat <conversion> <number>
+usage   :  hexfloat [--help|-h|/?] [<hex-value>|<number>]
 
-    <conversion> can be one of the following:
+    Prints the hexadecimal, single-precision floating point, and
+    double-precision floating point value of the input.
 
-    hex-single:  Convert from hexadecimal to single-precision float
-    hex-double:  Convert from hexadecimal to double-precision float
-    single-hex:  Convert from single-precision float to hexadecimal
-    double-hex:  Convert from double-precision float to hexadecimal
+    Floating-point Numbers are recognized by a leading + or - sign, or if they
+    contain a decimal point.
+
+    In addition, the special values "NaN", "QNaN", "SNaN", "inf" or "infinity"
+    are recognized (case insensitive).
+
+    All other arguments are interpreted as hexadecimal values. Eight or fewer
+    hexadecimal digits indicate the hexadecimal representation of a
+    single-precision (32-bit) floating-point value. More than eight hex digits
+    indicate a doublel-precision (64-bit) value. Values should be zero-padded if
+    necessary.
 )";
+
+
+struct FPValue {
+    long   hex  { 0 };
+    float  fp32 { 0 };
+    double fp64 { 0 };
+};
 
 
 void print (char* string) {
@@ -30,6 +44,11 @@ void print (char* string) {
 
 void fprint (FILE* stream, char* string) {
     fputs (string, stream);
+}
+
+
+bool isNumber (char* string) {
+    return true;
 }
 
 
@@ -51,14 +70,20 @@ void PrintBinary (int x, int start, int end)
 
 int main (int argc, char *argv[])
 {
+    FPValue value;
+
+    if (  argc < 2
+       || 0 == _stricmp(argv[1], "--help") || 0 == _stricmp(argv[1], "-h") || 0 == _stricmp(argv[1], "/?")
+       )
+    {
+        puts(usage);
+        puts(version);
+        return 1;
+    }
+
     if (0 == _stricmp(argv[1], "--version")) {
         printf("%s\n", version);
         return 0;
-    }
-
-    if (argc < 3) {
-        fprint (stderr, usage);
-        return 1;
     }
 
     /* Skip leading whitespace. */
