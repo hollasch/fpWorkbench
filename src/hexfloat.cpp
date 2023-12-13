@@ -4,13 +4,19 @@ program is called with a command-line argument, then it prints out the appropria
 not command- line arguments are given, then it goes into interactive mode.
 ***************************************************************************************************/
 
+#include <iomanip>
+#include <iostream>
 #include <stdio.h>
 #include <string.h>
+#include <string>
+#include <vector>
+
+using namespace std;
 
 
-static auto version = "hexfloat 2.0.0-alpha | 2023-12-10 | https://github.com/hollasch/fpWorkbench";
+const static string version { "hexfloat 2.0.0-alpha | 2023-12-13 | https://github.com/hollasch/fpWorkbench\n" };
 
-char usage[] = R"(
+const static string usage { R"(
 hexfloat:  Convert between hexadecimal and floating-point numbers
 usage   :  hexfloat [--help|-h|/?] [<hex-value>|<number>]
 
@@ -28,7 +34,8 @@ usage   :  hexfloat [--help|-h|/?] [<hex-value>|<number>]
     single-precision (32-bit) floating-point value. More than eight hex digits
     indicate a doublel-precision (64-bit) value. Values should be zero-padded if
     necessary.
-)";
+
+)" };
 
 
 struct FPValue {
@@ -36,15 +43,6 @@ struct FPValue {
     float  fp32 { 0 };
     double fp64 { 0 };
 };
-
-
-void print (char* string) {
-    fputs (string, stdout);
-}
-
-void fprint (FILE* stream, char* string) {
-    fputs (string, stream);
-}
 
 
 bool isNumber (char* string) {
@@ -70,21 +68,24 @@ void PrintBinary (int x, int start, int end)
 
 int main (int argc, char *argv[])
 {
+    vector<string> args { argv, argv + argc };
+
     FPValue value;
 
-    if (  argc < 2
-       || 0 == _stricmp(argv[1], "--help") || 0 == _stricmp(argv[1], "-h") || 0 == _stricmp(argv[1], "/?")
-       )
-    {
-        puts(usage);
-        puts(version);
+    if (args.size() < 2 || 2 < args.size() || args[1] == "--help" || args[1] == "-h" || args[1] == "/?") {
+        cout << usage;
+        cout << version;
         return 1;
     }
 
-    if (0 == _stricmp(argv[1], "--version")) {
-        printf("%s\n", version);
+    auto& arg = args[1];
+
+    if (arg == "--version") {
+        cout << version;
         return 0;
     }
+
+    return 0;
 
     /* Skip leading whitespace. */
 
@@ -96,7 +97,9 @@ int main (int argc, char *argv[])
 
         long val;       /* Hex Value */
         sscanf_s (ptr, "%lx", &val);
-        printf ("0x%08lx: %.10e\n", val, *(float*)(&val));
+        // printf ("0x%08lx: %.10e\n", val, *(float*)(&val));
+        cout << "0x" << std::hex << std::setfill('0') << std::setw(8) << val
+             << ": " << std::setprecision(10) << *(float*)(&val) << '\n';
 
     } else if (0 == strcmp(argv[1],"hex-double")) {
 
@@ -127,7 +130,10 @@ int main (int argc, char *argv[])
         ((long*)(&real))[0] = val_lslw;
         ((long*)(&real))[1] = val_mslw;
 
-        printf ("0x%08lx %08lx: %.20le\n", val_mslw, val_lslw, real);
+        // printf ("0x%08lx %08lx: %.20le\n", val_mslw, val_lslw, real);
+        cout << "0x" << std::hex << std::setfill('0') << std::setw(8) << val_mslw
+             << ' '  << std::hex << std::setfill('0') << std::setw(8) << val_lslw
+             << ": " << std::setprecision(10) << real << '\n';
 
     } else if (0 == strcmp(argv[1],"single-hex")) {
 
@@ -135,8 +141,8 @@ int main (int argc, char *argv[])
         int   intval;
 
         if (((*ptr < '0')||('9' < *ptr)) && (*ptr != '.') && (*ptr != '-')) {
-            fprint (stderr, usage);
-            fprintf (stderr, "\"%s\" is not a floating point number.\n", ptr);
+            cerr << usage;
+            cerr << "\"" << ptr << "\" is not a floating point number.\n";
             return 1;
         }
 
@@ -159,8 +165,8 @@ int main (int argc, char *argv[])
         long   *longptr;        /* For Hex Values */
 
         if (((*ptr < '0')||('9' < *ptr)) && (*ptr != '.') && (*ptr != '-')) {
-            fprint (stderr, usage);
-            fprintf (stderr, "\"%s\" is not a floating point number.\n", ptr);
+            cerr << usage;
+            cerr << "\"" << ptr << "\" is not a floating point number.\n";
             return 1;
         }
 
