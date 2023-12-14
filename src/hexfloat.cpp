@@ -4,6 +4,7 @@ program is called with a command-line argument, then it prints out the appropria
 not command- line arguments are given, then it goes into interactive mode.
 ***************************************************************************************************/
 
+#include <cctype>
 #include <iomanip>
 #include <iostream>
 #include <stdio.h>
@@ -14,7 +15,7 @@ not command- line arguments are given, then it goes into interactive mode.
 using namespace std;
 
 
-const static string version { "hexfloat 2.0.0-alpha | 2023-12-13 | https://github.com/hollasch/fpWorkbench\n" };
+const static string version { "hexfloat 2.0.0-alpha | 2023-12-14 | https://github.com/hollasch/fpWorkbench\n" };
 
 const static string usage { R"(
 hexfloat:  Convert between hexadecimal and floating-point numbers
@@ -23,17 +24,14 @@ usage   :  hexfloat [--help|-h|/?] [<hex-value>|<number>]
     Prints the hexadecimal, single-precision floating point, and
     double-precision floating point value of the input.
 
-    Floating-point Numbers are recognized by a leading + or - sign, or if they
-    contain a decimal point.
+    Hexadecimal values must be prefixed with "0x" or "0X". All other arguments
+    are interpreted as numbers. Eight or fewer hexadecimal digits indicate the
+    hexadecimal representation of a single-precision (32-bit) floating-point value.
+    More than eight hex digits indicate a double-precision (64-bit) value. Values
+    should be zero-padded if necessary to specify a double-precision value.
 
     In addition, the special values "NaN", "QNaN", "SNaN", "inf" or "infinity"
     are recognized (case insensitive).
-
-    All other arguments are interpreted as hexadecimal values. Eight or fewer
-    hexadecimal digits indicate the hexadecimal representation of a
-    single-precision (32-bit) floating-point value. More than eight hex digits
-    indicate a doublel-precision (64-bit) value. Values should be zero-padded if
-    necessary.
 
 )" };
 
@@ -45,8 +43,8 @@ struct FPValue {
 };
 
 
-bool isNumber (char* string) {
-    return true;
+bool isNumber (string s) {
+    return s.find("0x") != 0 && s.find("0X") != 0;
 }
 
 
@@ -84,6 +82,11 @@ int main (int argc, char *argv[])
         cout << version;
         return 0;
     }
+
+    if (isNumber(arg))
+        cout << "<number>\n";
+    else
+        cout << "<hex>\n";
 
     return 0;
 
