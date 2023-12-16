@@ -43,11 +43,13 @@ struct FPValue {
 };
 
 
+//----------------------------------------------------------------------------------------------------------------------
 bool isNumber (string s) {
     return s.find("0x") != 0 && s.find("0X") != 0;
 }
 
 
+//----------------------------------------------------------------------------------------------------------------------
 void PrintBinary (int x, int start, int end)
 {
     // Print portion of an integer in binary notation.
@@ -62,8 +64,19 @@ void PrintBinary (int x, int start, int end)
 }
 
 
-/**************************************************************************/
+//----------------------------------------------------------------------------------------------------------------------
+void interpretNumber(const string& n) {
+    cout << "<number>\n";
+}
 
+
+//----------------------------------------------------------------------------------------------------------------------
+void interpretHex(const string& n) {
+    cout << "<hex>\n";
+}
+
+
+//----------------------------------------------------------------------------------------------------------------------
 int main (int argc, char *argv[])
 {
     vector<string> args { argv, argv + argc };
@@ -84,12 +97,13 @@ int main (int argc, char *argv[])
     }
 
     if (isNumber(arg))
-        cout << "<number>\n";
+        interpretNumber(arg);
     else
-        cout << "<hex>\n";
+        interpretHex(arg);
 
     return 0;
 
+#if 0
     /* Skip leading whitespace. */
 
     char *ptr;      /* Input Pointer */
@@ -195,4 +209,5 @@ int main (int argc, char *argv[])
     }
 
     return 0;
+#endif
 }
