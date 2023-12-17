@@ -5,8 +5,10 @@ not command- line arguments are given, then it goes into interactive mode.
 ***************************************************************************************************/
 
 #include <cctype>
+#include <cstdlib>
 #include <iomanip>
 #include <iostream>
+#include <limits>
 #include <stdio.h>
 #include <string.h>
 #include <string>
@@ -26,12 +28,14 @@ usage   :  hexfloat [--help|-h|/?] [<hex-value>|<number>]
 
     Hexadecimal values must be prefixed with "0x" or "0X". All other arguments
     are interpreted as numbers. Eight or fewer hexadecimal digits indicate the
-    hexadecimal representation of a single-precision (32-bit) floating-point value.
-    More than eight hex digits indicate a double-precision (64-bit) value. Values
-    should be zero-padded if necessary to specify a double-precision value.
+    hexadecimal representation of a single-precision (32-bit) floating-point
+    value. More than eight hex digits indicate a double-precision (64-bit)
+    value. Values should be zero-padded if necessary to specify a
+    double-precision value.
 
     In addition, the special values "NaN", "QNaN", "SNaN", "inf" or "infinity"
-    are recognized (case insensitive).
+    are recognized (case insensitive). The general "NaN" is interpreted as
+    "QNaN" (quiet NaN).
 
 )" };
 
@@ -50,8 +54,7 @@ bool isNumber (string s) {
 
 
 //----------------------------------------------------------------------------------------------------------------------
-void PrintBinary (int x, int start, int end)
-{
+void PrintBinary (int x, int start, int end) {
     // Print portion of an integer in binary notation.
 
     unsigned int mask    = 1 << start;
@@ -66,7 +69,55 @@ void PrintBinary (int x, int start, int end)
 
 //----------------------------------------------------------------------------------------------------------------------
 void interpretNumber(const string& n) {
-    cout << "<number>\n";
+
+    char const *s = n.c_str();
+
+    double fp64;
+    float  fp32;
+
+    // Handle special cases, otherwise interpret as a regular number.
+    if (0 == _stricmp(s, "inf") || 0 == _stricmp(s, "infinity")) {
+        fp64 = std::numeric_limits<double>::infinity();
+        fp32 = std::numeric_limits<float>::infinity();
+    } else if (0 == _stricmp(s, "nan") || 0 == _stricmp(s, "qnan")) {
+        fp64 = std::numeric_limits<double>::quiet_NaN();
+        fp32 = std::numeric_limits<float>::quiet_NaN();
+    } else if (0 == _stricmp(s, "snan")) {
+        fp64 = std::numeric_limits<double>::signaling_NaN();
+        fp32 = std::numeric_limits<float>::signaling_NaN();
+    } else {
+        fp64 = atof(n.c_str());
+        fp32 = static_cast<float>(fp64);
+    }
+
+    // Integer analogs
+    int   int32   = *((int*)(&fp32));
+    long* longPtr = (long*)(&fp64);
+
+    cout << '\n';
+    cout << "Float32 : " << fp32 << '\n';
+    cout << "Float64 : " << fp64 << '\n';
+
+    cout << "Hex32   : " << std::setw(8) << std::setfill('0') << std::hex << int32 << '\n';
+    cout << "Hex64   : " << std::setw(8) << std::setfill('0') << std::hex << longPtr[1] << ' '
+                         << std::setw(8) << std::setfill('0') << std::hex << longPtr[0] << '\n';
+
+    cout << "Binary32: ";
+    PrintBinary(int32, 31, 31);
+    cout << '.';
+    PrintBinary(int32, 30, 23);
+    cout << '.';
+    PrintBinary(int32, 22,  0);
+    cout << '\n';
+
+    cout << "Binary64: ";
+    PrintBinary(longPtr[1], 31, 31);
+    cout << '.';
+    PrintBinary(longPtr[1], 30, 20);
+    cout << '.';
+    PrintBinary(longPtr[1], 19,  0);
+    PrintBinary(longPtr[0], 31,  0);
+    cout << '\n';
 }
 
 
