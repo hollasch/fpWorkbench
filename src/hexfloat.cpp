@@ -5,6 +5,7 @@ not command- line arguments are given, then it goes into interactive mode.
 ***************************************************************************************************/
 
 #include <cctype>
+#include <cstdint>
 #include <cstdlib>
 #include <iomanip>
 #include <iostream>
@@ -41,9 +42,14 @@ usage   :  hexfloat [--help|-h|/?] [<hex-value>|<number>]
 
 
 struct FPValue {
-    long   hex  { 0 };
-    float  fp32 { 0 };
-    double fp64 { 0 };
+    float  float32 { 0 };
+    double float64 { 0 };
+
+    uint32_t integer32 { 0 };
+    uint64_t integer64 { 0 };
+
+    unsigned int msw() const { return integer64 >> 32; }
+    unsigned int lsw() const { return integer64 &  0xffffffffUL; }
 };
 
 
@@ -54,7 +60,7 @@ bool isNumber (string s) {
 
 
 //----------------------------------------------------------------------------------------------------------------------
-void PrintBinary (int x, int start, int end) {
+void printBinary (uint32_t x, int start, int end) {
     // Print portion of an integer in binary notation.
 
     unsigned int mask    = 1 << start;
@@ -64,6 +70,33 @@ void PrintBinary (int x, int start, int end) {
         putchar ((mask & x) ? '1' : '0');
         mask >>= 1;
     }
+}
+
+
+//----------------------------------------------------------------------------------------------------------------------
+void report(const FPValue& v) {
+    cout << '\n';
+    cout << "Float32 : " << std::setprecision(9) << v.float32 << '\n';
+    cout << "Hex32   : " << std::setw(8) << std::setfill('0') << std::hex << v.integer32 << '\n';
+    cout << "Binary32: ";
+    printBinary(v.integer32, 31, 31);
+    cout << '.';
+    printBinary(v.integer32, 30, 23);
+    cout << '.';
+    printBinary(v.integer32, 22,  0);
+    cout << '\n';
+
+    cout << "\nFloat64 : " << std::setprecision(18) << v.float64 << '\n';
+    cout << "Hex64   : " << std::setw(8) << std::setfill('0') << std::hex << v.msw() << ' '
+                         << std::setw(8) << std::setfill('0') << std::hex << v.lsw() << '\n';
+    cout << "Binary64: ";
+    printBinary(v.msw(), 31, 31);
+    cout << '.';
+    printBinary(v.msw(), 30, 20);
+    cout << '.';
+    printBinary(v.msw(), 19,  0);
+    printBinary(v.lsw(), 31,  0);
+    cout << '\n';
 }
 
 
@@ -91,33 +124,43 @@ void interpretNumber(const string& n) {
     }
 
     // Integer analogs
-    int   int32   = *((int*)(&fp32));
-    long* longPtr = (long*)(&fp64);
+    uint32_t  int32    = *((uint32_t*)(&fp32));
+    uint64_t* int64ptr = (uint64_t*)(&fp64);
 
-    cout << '\n';
-    cout << "Float32 : " << fp32 << '\n';
-    cout << "Float64 : " << fp64 << '\n';
+    FPValue v;
+    v.integer32 = int32;
+    v.integer64 = *int64ptr;
+    v.float32 = fp32;
+    v.float64 = fp64;
 
-    cout << "Hex32   : " << std::setw(8) << std::setfill('0') << std::hex << int32 << '\n';
-    cout << "Hex64   : " << std::setw(8) << std::setfill('0') << std::hex << longPtr[1] << ' '
-                         << std::setw(8) << std::setfill('0') << std::hex << longPtr[0] << '\n';
+    report(v);
 
-    cout << "Binary32: ";
-    PrintBinary(int32, 31, 31);
-    cout << '.';
-    PrintBinary(int32, 30, 23);
-    cout << '.';
-    PrintBinary(int32, 22,  0);
-    cout << '\n';
+    #if 0
+        cout << '\n';
+        cout << "Float32 : " << fp32 << '\n';
+        cout << "Float64 : " << fp64 << '\n';
 
-    cout << "Binary64: ";
-    PrintBinary(longPtr[1], 31, 31);
-    cout << '.';
-    PrintBinary(longPtr[1], 30, 20);
-    cout << '.';
-    PrintBinary(longPtr[1], 19,  0);
-    PrintBinary(longPtr[0], 31,  0);
-    cout << '\n';
+        cout << "Hex32   : " << std::setw(8) << std::setfill('0') << std::hex << int32 << '\n';
+        cout << "Hex64   : " << std::setw(8) << std::setfill('0') << std::hex << longPtr[1] << ' '
+                             << std::setw(8) << std::setfill('0') << std::hex << longPtr[0] << '\n';
+
+        cout << "Binary32: ";
+        printBinary(int32, 31, 31);
+        cout << '.';
+        printBinary(int32, 30, 23);
+        cout << '.';
+        printBinary(int32, 22,  0);
+        cout << '\n';
+
+        cout << "Binary64: ";
+        printBinary(longPtr[1], 31, 31);
+        cout << '.';
+        printBinary(longPtr[1], 30, 20);
+        cout << '.';
+        printBinary(longPtr[1], 19,  0);
+        printBinary(longPtr[0], 31,  0);
+        cout << '\n';
+    #endif
 }
 
 
