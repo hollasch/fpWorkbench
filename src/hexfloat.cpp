@@ -18,7 +18,7 @@ not command- line arguments are given, then it goes into interactive mode.
 using namespace std;
 
 
-const static string version { "hexfloat 2.0.0-alpha | 2023-12-14 | https://github.com/hollasch/fpWorkbench\n" };
+const static string version { "hexfloat 2.0.0-alpha | 2023-12-19 | https://github.com/hollasch/fpWorkbench\n" };
 
 const static string usage { R"(
 hexfloat:  Convert between hexadecimal and floating-point numbers
@@ -103,64 +103,33 @@ void report(const FPValue& v) {
 //----------------------------------------------------------------------------------------------------------------------
 void interpretNumber(const string& n) {
 
-    char const *s = n.c_str();
+    FPValue v;
 
-    double fp64;
-    float  fp32;
+    char const *s = n.c_str();
 
     // Handle special cases, otherwise interpret as a regular number.
     if (0 == _stricmp(s, "inf") || 0 == _stricmp(s, "infinity")) {
-        fp64 = std::numeric_limits<double>::infinity();
-        fp32 = std::numeric_limits<float>::infinity();
+        v.float64 = std::numeric_limits<double>::infinity();
+        v.float32 = std::numeric_limits<float>::infinity();
     } else if (0 == _stricmp(s, "nan") || 0 == _stricmp(s, "qnan")) {
-        fp64 = std::numeric_limits<double>::quiet_NaN();
-        fp32 = std::numeric_limits<float>::quiet_NaN();
+        v.float64 = std::numeric_limits<double>::quiet_NaN();
+        v.float32 = std::numeric_limits<float>::quiet_NaN();
     } else if (0 == _stricmp(s, "snan")) {
-        fp64 = std::numeric_limits<double>::signaling_NaN();
-        fp32 = std::numeric_limits<float>::signaling_NaN();
+        v.float64 = std::numeric_limits<double>::signaling_NaN();
+        v.float32 = std::numeric_limits<float>::signaling_NaN();
     } else {
-        fp64 = atof(n.c_str());
-        fp32 = static_cast<float>(fp64);
+        v.float64 = atof(n.c_str());
+        v.float32 = static_cast<float>(v.float64);
     }
 
     // Integer analogs
-    uint32_t  int32    = *((uint32_t*)(&fp32));
-    uint64_t* int64ptr = (uint64_t*)(&fp64);
+    uint32_t  int32    = *((uint32_t*)(&v.float32));
+    uint64_t* int64ptr = (uint64_t*)(&v.float64);
 
-    FPValue v;
-    v.integer32 = int32;
-    v.integer64 = *int64ptr;
-    v.float32 = fp32;
-    v.float64 = fp64;
+    v.integer32 = *((uint32_t*)(&v.float32));
+    v.integer64 = *(uint64_t*)(&v.float64);
 
     report(v);
-
-    #if 0
-        cout << '\n';
-        cout << "Float32 : " << fp32 << '\n';
-        cout << "Float64 : " << fp64 << '\n';
-
-        cout << "Hex32   : " << std::setw(8) << std::setfill('0') << std::hex << int32 << '\n';
-        cout << "Hex64   : " << std::setw(8) << std::setfill('0') << std::hex << longPtr[1] << ' '
-                             << std::setw(8) << std::setfill('0') << std::hex << longPtr[0] << '\n';
-
-        cout << "Binary32: ";
-        printBinary(int32, 31, 31);
-        cout << '.';
-        printBinary(int32, 30, 23);
-        cout << '.';
-        printBinary(int32, 22,  0);
-        cout << '\n';
-
-        cout << "Binary64: ";
-        printBinary(longPtr[1], 31, 31);
-        cout << '.';
-        printBinary(longPtr[1], 30, 20);
-        cout << '.';
-        printBinary(longPtr[1], 19,  0);
-        printBinary(longPtr[0], 31,  0);
-        cout << '\n';
-    #endif
 }
 
 
@@ -196,112 +165,4 @@ int main (int argc, char *argv[])
         interpretHex(arg);
 
     return 0;
-
-#if 0
-    /* Skip leading whitespace. */
-
-    char *ptr;      /* Input Pointer */
-    for (ptr=argv[2];  *ptr && ((*ptr == ' ') || (*ptr == '\t'));  ++ptr)
-        continue;
-
-    if (0 == _stricmp (argv[1], "hex-single")) {
-
-        long val;       /* Hex Value */
-        sscanf_s (ptr, "%lx", &val);
-        // printf ("0x%08lx: %.10e\n", val, *(float*)(&val));
-        cout << "0x" << std::hex << std::setfill('0') << std::setw(8) << val
-             << ": " << std::setprecision(10) << *(float*)(&val) << '\n';
-
-    } else if (0 == strcmp(argv[1],"hex-double")) {
-
-        char   *end;        /* Input String Tail Pointer */
-        double  real;       /* Double Precision Real Value */
-        long    val_mslw;   /* Hex Val (Most-Sig. LongWord) */
-        long    val_lslw;   /* Hex Val (Least-Sig. LongWord) */
-
-        // Skip past any "0x" prefix.
-        if (ptr[0] == '0' && (ptr[1] == 'x' || ptr[1] == 'X'))
-            ptr += 2;
-
-        /* Find the end of the hex string. */
-        for (end=ptr;  *end;  ++end)
-            ;
-
-        if ((end-ptr) <= 8) {    /* Eight or fewer hex digits */
-            sscanf_s (ptr, "%lx", &val_lslw);
-            val_mslw = 0;
-        } else {          /* More than eight hex digits */
-            sscanf_s (end-8, "%lx", &val_lslw);
-            end[-8] = 0;
-            sscanf_s (ptr, "%lx", &val_mslw);
-        }
-
-        // Note that this does little-endian (Intel)
-
-        ((long*)(&real))[0] = val_lslw;
-        ((long*)(&real))[1] = val_mslw;
-
-        // printf ("0x%08lx %08lx: %.20le\n", val_mslw, val_lslw, real);
-        cout << "0x" << std::hex << std::setfill('0') << std::setw(8) << val_mslw
-             << ' '  << std::hex << std::setfill('0') << std::setw(8) << val_lslw
-             << ": " << std::setprecision(10) << real << '\n';
-
-    } else if (0 == strcmp(argv[1],"single-hex")) {
-
-        float real_float;   /* Single-Precision Real Value */
-        int   intval;
-
-        if (((*ptr < '0')||('9' < *ptr)) && (*ptr != '.') && (*ptr != '-')) {
-            cerr << usage;
-            cerr << "\"" << ptr << "\" is not a floating point number.\n";
-            return 1;
-        }
-
-        sscanf_s (ptr, "%f",  &real_float);
-
-        intval = *((long*)(&real_float));
-
-        printf ("0x%08lx\n", intval);
-
-        PrintBinary (intval, 31, 31);
-        putchar ('.');
-        PrintBinary (intval, 30, 23);
-        putchar ('.');
-        PrintBinary (intval, 22,  0);
-        putchar ('\n');
-
-    } else if (0 == strcmp(argv[1],"double-hex")) {
-
-        double  real_double;    /* Double-Precision Real Value */
-        long   *longptr;        /* For Hex Values */
-
-        if (((*ptr < '0')||('9' < *ptr)) && (*ptr != '.') && (*ptr != '-')) {
-            cerr << usage;
-            cerr << "\"" << ptr << "\" is not a floating point number.\n";
-            return 1;
-        }
-
-        sscanf_s (ptr, "%lf", &real_double);
-        longptr = (long*)(&real_double);
-
-        // Note - this is coded for reverse endian (Intel).
-
-        printf ("0x%08lx%08lx\n", longptr[1], longptr[0]);
-
-        PrintBinary (longptr[1], 31, 31);
-        putchar ('.');
-        PrintBinary (longptr[1], 30, 20);
-        putchar ('.');
-        PrintBinary (longptr[1], 19,  0);
-        PrintBinary (longptr[0], 31,  0);
-        putchar ('\n');
-
-    } else {
-
-        printf ("hexfloat: Unknown conversion type (%s)\n", argv[1]);
-        return 1;
-    }
-
-    return 0;
-#endif
 }
