@@ -135,7 +135,26 @@ void interpretNumber(const string& n) {
 
 //----------------------------------------------------------------------------------------------------------------------
 void interpretHex(const string& n) {
-    cout << "<hex>\n";
+    FPValue v;
+
+    if (n.length() > 18) {
+        cerr << "hexfloat: hex value too long (" << n << ").\n";
+        return;
+    }
+
+    if (n.length() <= 10) {
+        v.integer32 = stoul(n, 0, 16);
+        v.float32 = *((float*)(&v.integer32));
+        v.float64 = v.float32;
+        v.integer64 = *((uint64_t*)(&v.float64));
+    } else {
+        v.integer64 = stoull(n, 0, 16);
+        v.float64 = *((double*)(&v.integer64));
+        v.float32 = v.float64;
+        v.integer32 = *((uint32_t*)(&v.float32));
+    }
+
+    report(v);
 }
 
 
