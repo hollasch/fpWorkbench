@@ -54,8 +54,41 @@ struct FPValue {
 
 
 //----------------------------------------------------------------------------------------------------------------------
-bool isNumber (string s) {
-    return s.find("0x") != 0 && s.find("0X") != 0;
+bool isNumber (const string& s) {
+    if (s.find("0x") == 0 || s.find("0X") == 0) return false; // Intercept hexadecimal values.
+
+    // Ensure that there is a maximum of one decimal point.
+    int pointCount = 0;
+    for (auto c : s)
+        if (c == '.' && ++pointCount > 1) return false;
+
+    return true;
+}
+
+
+//----------------------------------------------------------------------------------------------------------------------
+bool isBinary (const string& s) {
+    // Returns true if the string matches the pattern "[01].[01]{8}.[01]{23}" or "[01].[01]{11}.[01]{52}".
+
+    if (s.length() == 34) {
+        if (s[1] != '.' || s[10] != '.') return false;
+    } else if (s.length() == 66) {
+        if (s[1] != '.' || s[13] != '.') return false;
+    } else {
+        return false;
+    }
+
+    int pointCount = 0;
+
+    for (auto c : s) {
+        if (c == '.') {
+            if (++pointCount > 2) return false;
+        } else if (c != '0' && c != '1') {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 
@@ -134,6 +167,37 @@ void interpretNumber(const string& n) {
 
 
 //----------------------------------------------------------------------------------------------------------------------
+void interpretBinary(const string& s) {
+    // Interpret the binary value. It is assumed that the string has already been validated as a binary value.
+
+    FPValue v;
+
+    uint64_t binaryValue { 0 };
+
+    for (const auto c : s) {
+        if (c == '.') continue; // Skip over decimal separators.
+
+        binaryValue <<= 1;
+        if (c == '1') binaryValue |= 1;
+    }
+
+    if (s.length() == 34) {
+        v.integer32 = static_cast<uint32_t>(binaryValue);
+        v.float32 = *((float*)(&v.integer32));
+        v.float64 = v.float32;
+        v.integer64 = *((uint64_t*)(&v.float64));
+    } else {
+        v.integer64 = binaryValue;
+        v.float64 = *((double*)(&v.integer64));
+        v.float32 = v.float64;
+        v.integer32 = *((uint32_t*)(&v.float32));
+    }
+
+    report(v);
+}
+
+
+//----------------------------------------------------------------------------------------------------------------------
 void interpretHex(const string& n) {
     FPValue v;
 
@@ -178,7 +242,9 @@ int main (int argc, char *argv[])
         return 0;
     }
 
-    if (isNumber(arg))
+    if (isBinary(arg))
+        interpretBinary(arg);
+    else if (isNumber(arg))
         interpretNumber(arg);
     else
         interpretHex(arg);
